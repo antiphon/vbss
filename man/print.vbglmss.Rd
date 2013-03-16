@@ -1,20 +1,13 @@
 \name{print.vbglmss}
 \alias{print.vbglmss}
-\title{Variational approximation to Spike and Slab GLM.}
+\title{Print method for result object of \link{vbglmss}}
 \usage{
   print.vbglmss(x, ...)
 }
 \arguments{
-  \item{y}{Test param y for w}
-
-  \item{X}{X param}
-
-  \item{Z}{param Z}
-}
-\value{
-  A list with cool stuff.
+  \item{x}{the result object.}
 }
 \description{
-  Variational approximation to Spike and Slab GLM.
+  Print method for result object of \link{vbglmss}
 }
 

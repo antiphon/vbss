@@ -1,2 +1,2 @@
-S3method(print,vbss)
+S3method(print,vbglmss)
 export(vbglmss)

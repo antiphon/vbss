@@ -28,14 +28,10 @@ vbglmss <- function(formula, family=gaussian, data=NULL, intercept=TRUE,
   
 }
 
-#' Variational approximation to Spike and Slab GLM.
+#' Print method for result object of \link{vbglmss}
 #'
-#' @param y Test param y for w
-#' @param X X param
-#' @param Z param Z
-#' @return 
-#'    A list with cool stuff.
-#' @S3method print vbss
+#' @param x the result object.
+#' @S3method print vbglmss
 
 print.vbglmss<-function(x, ...) {
   print(x)
