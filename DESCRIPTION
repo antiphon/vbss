@@ -1,13 +1,14 @@
-Package: vbss
+Package: vbglmss
 Type: Package
-Title: Fast Spike and Slab logistic regression 
-Version: 1.0
+Title: Fast Spike and Slab logistic regression
+Version: 0.1
 Date: 2013-03-07
-Author: Tuomas Rajala 
+Author: Tuomas Rajala
 Maintainer: Tuomas Rajala <tuomas.rajala@iki.fi>
-Description: Inference function for Bayesian logistic regression model 
-with (some) linear coefficients having the spike and slab
-prior, i.e. are exactly zero with some probability. 
-The inference uses approximative variational technique so is quite fast.
+Description: Inference for Bayesian logistic regression model
+    with linear coefficients having the spike and slab
+    prior, i.e. are exactly zero with some positive probability. The inference
+    is done via variational approximation.
 License: GPL
-
+Collate:
+    'vbss.R'
