@@ -1,10 +1,9 @@
 \name{vbglmss}
 \alias{vbglmss}
-\title{Variational approximation of Spike and Slab GLM.}
+\title{Variational approximation of Spike and Slab GLM}
 \usage{
   vbglmss(formula, family = gaussian, data = NULL,
-    intercept = TRUE, y = NULL, X = NULL, Z = NULL,
-    verbose = FALSE, eps = 1e-08)
+    intercept = FALSE, y = NULL, X = NULL, Z = NULL, ...)
 }
 \arguments{
   \item{formula}{an object of class \link{formula}. See
@@ -20,7 +19,7 @@
   much like in \link{glm}.}
 
   \item{intercept}{should the intercept term be explicitely
-  included.}
+  added.}
 
   \item{y}{Alternative for formula&data: The response}
 
@@ -28,6 +27,9 @@
 
   \item{Z}{Alternative for formula&data: The non-SS
   (regular Gaussian) covariates}
+
+  \item{method}{Use 'simultaneous' or 'sequential'. See
+  Details.}
 
   \item{verbose}{print additional runtime messages}
 
@@ -37,9 +39,17 @@
   An object of class \link{vbglmss}.
 }
 \description{
-  Variational approximation of Spike and Slab GLM.
+  The function fits the GLM model in Bayesian framework
+  with some covariate coefficients having the spike and
+  slab prior.
 }
 \details{
-  Jee joo
+  The formula should use the special tags 'ss' for those
+  covariates that are set the spike and slab prior. Without
+  it, we assume regular Gaussian prior.
+
+  Using the y,X,Z variables is useful to avoid overhead in
+  formula parsing when data is large. This is then equal to
+  the formula y ~ ss(X) + Z
 }
 

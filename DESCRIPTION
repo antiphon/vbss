@@ -11,5 +11,11 @@ Description: Inference for Bayesian logistic regression model
     prior, i.e. are exactly zero with some positive probability. The inference
     is done via variational approximation.
 License: GPL
+Depends:
+    Matrix
 Collate:
     'vbglmss.R'
+    'helpers.R'
+    'linear.R'
+    'logistic.R'
+    'mixed_gaussian_logistic.R'

@@ -1,2 +1,8 @@
 S3method(print,vbglmss)
 export(vbglmss)
+export(vbglmss.fit.logistic)
+export(vbglmss.fit.logistic.X)
+export(vbglmss.fit.logistic.Z)
+export(vbglmss.mixedSS)
+import(Matrix)
+import(stringr)
