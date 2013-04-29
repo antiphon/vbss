@@ -1,4 +1,5 @@
 S3method(print,vbglmss)
+export(sparseSolve)
 export(vbglmss)
 export(vbglmss.fit.logistic)
 export(vbglmss.fit.logistic.X)

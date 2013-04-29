@@ -31,7 +31,7 @@
   \item{max.iter}{--}
 }
 \value{
-  A list
+  A list with posteriors.
 }
 \description{
   The function fits a regression model where observations
@@ -40,12 +40,6 @@
   and/or Gaussian (G) priors.
 }
 \details{
-  The formula should use the special tags 'ss' for those
-  covariates that are set the spike and slab prior. Without
-  it, we assume regular Gaussian prior.
-
-  Using the y,X,Z variables is useful to avoid overhead in
-  formula parsing when data is large. This is then equal to
-  the formula y ~ ss(X) + Z
+  TODO
 }
 

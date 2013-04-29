@@ -19,3 +19,4 @@ Collate:
     'linear.R'
     'logistic.R'
     'mixed_gaussian_logistic.R'
+    'sparseSolve.R'

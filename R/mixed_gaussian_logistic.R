@@ -62,9 +62,6 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     }
     ## use -1/+1 for y's
     y[y<1] <- -1
-    if(is.null(prior$binary$xi))
-      xi <- rep(10, Ny)
-    else xi <- rep(prior$binary$xi, Ny)[1:Ny]
   }
   # check gaussian data and covariates
   if(!missing(h)) {
@@ -88,6 +85,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     tauh_a0 <- c(prior$gaussian$tau[1], 0.001)[1]
     tauh_b0 <- c(prior$gaussian$tau[2], 0.001)[1]
     tauh <- tauh_a0/tauh_b0
+    
   }
   ## damping for mean of slab
   damp1 <- damp
@@ -114,6 +112,20 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     if(is.null(prior$beta$diagonal)) prior$beta$diagonal <- FALSE
   }else mbeta <- 0
   
+  if(is.null(prior$binary$xi)){
+    if(Ny){
+      w <- rep(0, Ny)
+      S <- Diagonal(n=Ny, x=0)
+      if(K) S <- S + Xy%*%Diagonal(x=tautheta)%*%t(Xy)
+      if(J) S <- S + Zy%*%S0beta%*%t(Zy)
+      if(K) w <- w + Xy%*%mmtheta
+      if(J) w <- w + Zy%*%mbeta
+      xi <- as.numeric(sqrt( diag(S+w%*%t(w)) ))
+    }
+  }
+  else xi <- rep(prior$binary$xi, Ny)[1:Ny]
+  
+  
   A1 <- A2 <- B1 <- B2 <- 0
   d1 <- d2 <- d3 <- d4 <- e1 <- e2 <- e3 <- e4 <- e5 <- 0
   ##
@@ -123,6 +135,8 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
   iter <- 0
   loop <- TRUE
   while(loop){ 
+    ## guard against too small numbesr
+    xi[xi==0] <- 1e-8
     iter <- iter + 1
     xiold <- xi
     mbetaold <- mbeta
@@ -148,7 +162,6 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       u <- 0.5*mtheta^2*tautheta - 0.5*m0theta^2*tauhyper + log(pi0/(1-pi0))
       gtheta <- as.numeric(logit(u))
       mmtheta <- gtheta*mtheta
-      
       Stheta <- Diagonal(x=as.numeric(gtheta/tautheta))
       ## update hypertau
       tauhyper_a <- tauhyper_a0 + K/2  
@@ -168,7 +181,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       e5 <- Si0beta%*%m0beta
       e6 <-0.5*e3 + e4 + e5 - e1 - 2*e2
       if(prior$beta$diagonal) B3 <- Diagonal(n=J, x=diag(B3))
-      Sbeta <- solve(B3)
+      Sbeta <- sparseSolve(B3)
       mbeta <- as.numeric(Sbeta%*%e6)
     }
     ## update gaussian observations' precision
@@ -181,7 +194,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       if(K & J) s <- s + 2*t(mbeta)%*%t(Zh)%*%Xh%*%mmtheta
       tauh_a <- as.numeric(tauh_a0 + Nh/2)
       tauh_b <- as.numeric(tauh_b0 + 0.5*s)
-      tauh <- tauh_a/tauh_b
+      tauh <- max(tauh_a/tauh_b, 1e-10)
     }
     ## update vb logistic approx parameters
     if(Ny){
@@ -194,10 +207,11 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       xi <- as.numeric(sqrt( diag(S+w%*%t(w)) ))
     }
     ## loop ending...
-    loop<- (iter < max.iter) &
-      (d<-max(c(abs(xi-xiold), abs(gold-gtheta), abs(mbeta-mbetaold)))) > eps
-    
-    cat2("d:", d, "           \r")
+    d1<-max(abs(xi-xiold))
+    d2<- max(abs(gold-gtheta))
+    d3<-max(abs(mbeta-mbetaold))
+    loop<- (iter < max.iter) & max(d1,d2,d3) > eps
+    cat2("xi:", d1, "g:", d2, "mb:", d3, "           \r")
   } ## loop end.
   cat2("\n")
   if(iter >= max.iter) warning("Did not converge.")
