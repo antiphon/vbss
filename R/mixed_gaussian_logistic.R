@@ -141,6 +141,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     xiold <- xi
     mbetaold <- mbeta
     gold <- gtheta
+    mmthetaold<-mmtheta
     if(Ny) LAMBDA <- Diagonal(n=Ny, x=lambda(as.numeric(xi)) )
     ## update SS
     if(K){
@@ -210,8 +211,10 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     d1<-max(abs(xi-xiold))
     d2<- max(abs(gold-gtheta))
     d3<-max(abs(mbeta-mbetaold))
-    loop<- (iter < max.iter) & max(d1,d2,d3) > eps
-    cat2("xi:", d1, "g:", d2, "mb:", d3, "           \r")
+    d4<-max(abs(mmtheta-mmthetaold))
+    cond <- max(d1,d2)
+    loop<- (iter < max.iter) & cond > eps
+    cat2("xi:", d1, "g:", d2, "mb:", d3, "mt:", d4, "thetatau:", tauhyper, "           \r")
   } ## loop end.
   cat2("\n")
   if(iter >= max.iter) warning("Did not converge.")
