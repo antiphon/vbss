@@ -90,6 +90,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
   ## damping for mean of slab
   damp1 <- damp
   damp2 <- 1-damp1
+  tauhyper <- NULL
   ## initialize
   if(K){
     m0theta <- mmtheta <- mtheta <- rep(0, K)
@@ -102,7 +103,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     tauhyper_b0 <- c(prior$theta$tau[2], 0.001)[1]
     tauhyper <- tauhyper_a0/tauhyper_b0
     
-  } else gtheta <- -1
+  } else mmtheta<-gtheta <- -1
   if(J){
     m0beta <- mbeta <- rep(0, J)
     if(is.null(m0beta<-prior$beta$m)) m0beta <- rep(0, J)
