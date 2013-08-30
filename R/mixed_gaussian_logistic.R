@@ -14,7 +14,6 @@
 #' @param damp Damping coefficient in SS mean update. damp * old + (1-damp)*new.
 #' @param eps the approximation loop convergence threshold
 #' @param max.iter --
-#' @details
 #' TODO
 #' @return 
 #'  A list with posteriors.
@@ -93,7 +92,8 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
   tauhyper <- NULL
   ## initialize
   if(K){
-    m0theta <- mmtheta <- mtheta <- rep(0, K)
+    mmtheta <- mtheta <- m0theta <- rep(0, K) 
+    if(!is.null(prior$theta$m)) m0theta <- rep(prior$theta$m, K)[1:K]
     tautheta <- rep(1, K)
     if(is.null(prior$theta$pi)) pi0 <- rep(0.01, K)
     else pi0 <- rep(prior$theta$pi, K)[1:K]
@@ -111,6 +111,8 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     if(is.null(Si0beta<-prior$beta$Si))Si0beta <- solve(S0beta)
     mbeta <- m0beta
     if(is.null(prior$beta$diagonal)) prior$beta$diagonal <- FALSE
+    if(is.null(prior$beta$tapering)) prior$beta$tapering <- 0
+    if(is.null(prior$beta$off_from_prior)) prior$beta$off_from_prior <- FALSE
   }else mbeta <- 0
   
   if(is.null(prior$binary$xi)){
@@ -182,8 +184,21 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       if(Nh) e4 <- tauh*t(Zh)%*%h
       e5 <- Si0beta%*%m0beta
       e6 <-0.5*e3 + e4 + e5 - e1 - 2*e2
+      ## bottleneck:
       if(prior$beta$diagonal) B3 <- Diagonal(n=J, x=diag(B3))
+      else if(prior$beta$tapering) {
+        s3 <- diag(B3)
+        B3[ B3 < prior$beta$tapering ] <- 0
+        diag(B3) <- s3
+        B3 <- drop0(B3)
+      }
+      else if(prior$beta$off_from_prior){
+        B3 <- Diagonal(n=J, x=diag(B3-Si0beta))+Si0beta
+      }
+      #print("enter sparseSolve")
+      BB<<-B3
       Sbeta <- sparseSolve(B3)
+      #print("exit sparseSolve")
       mbeta <- as.numeric(Sbeta%*%e6)
     }
     ## update gaussian observations' precision
@@ -213,7 +228,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     d2<- max(abs(gold-gtheta))
     d3<-max(abs(mbeta-mbetaold))
     d4<-max(abs(mmtheta-mmthetaold))
-    cond <- max(d1,d2)
+    cond <- max(d1,d2, d3, d4)
     loop<- (iter < max.iter) & cond > eps
     cat2("xi:", d1, "g:", d2, "mb:", d3, "mt:", d4, "thetatau:", tauhyper, "           \r")
   } ## loop end.

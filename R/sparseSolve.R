@@ -9,7 +9,10 @@
 #' @export
 
 sparseSolve <- function(A) {
-  #L <- Cholesky(A, LDL=FALSE, super=TRUE, perm=FALSE)
-  #solve(L, system="A")
-  solve(A)
+  r<-try(v<-{
+      L <- Cholesky(A, LDL=FALSE, super=!TRUE, perm=FALSE)
+      solve(L, system="A")
+      }, silent=TRUE)
+  if("try-error" %in% is(r)) v <- solve(A)
+  v
 }

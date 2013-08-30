@@ -28,7 +28,7 @@
 
   \item{eps}{the approximation loop convergence threshold}
 
-  \item{max.iter}{--}
+  \item{max.iter}{-- TODO}
 }
 \value{
   A list with posteriors.
@@ -38,8 +38,5 @@
   can be from logistic and/or gaussian likelihood. The
   coefficients are shared, and can have Spike and Slab (SS)
   and/or Gaussian (G) priors.
-}
-\details{
-  TODO
 }
 
