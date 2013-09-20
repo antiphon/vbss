@@ -102,6 +102,9 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
     tauhyper_a0 <- c(prior$theta$tau[1], 0.001)[1]
     tauhyper_b0 <- c(prior$theta$tau[2], 0.001)[1]
     tauhyper <- tauhyper_a0/tauhyper_b0
+    taurange <- prior$theta$tau[3:4]
+    if(is.null(taurange[1])|is.na(taurange[1])) taurange[1] <- c(tauhyper_a0/tauhyper_b0)*0.1
+    if(is.null(taurange[2])|is.na(taurange[2])) taurange[2] <- c(tauhyper_a0/tauhyper_b0)*10
     
   } else mmtheta<-gtheta <- -1
   if(J){
@@ -170,7 +173,7 @@ vbglmss.mixedSS<-function(y, Xy, Zy, h, Xh, Zh,
       ## update hypertau
       tauhyper_a <- tauhyper_a0 + K/2  
       tauhyper_b <- tauhyper_b0 + 0.5*sum(tautheta + sum((mmtheta-m0theta)^2) )
-      tauhyper <- tauhyper_a/tauhyper_b
+      tauhyper <- min(tau_max, max(tau_min, tauhyper_a/tauhyper_b))
     }
     
     ## update gaussian coefs

@@ -2,8 +2,8 @@ Package: vbglmss
 Type: Package
 Title: Spike and Slab generalized linear regression (GLM) using variational
     approximation
-Version: 0.1
-Date: 2013-03-07
+Version: 0.21
+Date: 2013-09-06
 Author: Tuomas Rajala
 Maintainer: Tuomas Rajala <tuomas.rajala@iki.fi>
 Description: Inference for Bayesian logistic regression model
